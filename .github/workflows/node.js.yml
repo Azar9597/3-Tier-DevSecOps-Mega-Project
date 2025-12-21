@@ -46,7 +46,7 @@ jobs:
              gitleaks detect --source ./api --exit-code 1
 
   trivy_scan:
-      runs-on: gitleaks-scan
+      runs-on: Agent-1
       needs: gitleaks_scan
       steps:
          - name: Run Trivy vulnerability scanner
