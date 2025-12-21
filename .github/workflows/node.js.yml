@@ -45,6 +45,10 @@ jobs:
              gitleaks detect --source ./client --exit-code 1
              gitleaks detect --source ./api --exit-code 1
 
+  trivy_scan:
+      runs-on: gitleaks-scan
+      needs: gitleaks_scan
+      steps:
          - name: Run Trivy vulnerability scanner
            uses: aquasecurity/trivy-action@0.33.1
            with:
