@@ -45,5 +45,5 @@ jobs:
 
          - name: Gitleaks scan (client + api)
            run: |
-            gitleaks detect --source ./client --redact --exit-code=1
-            gitleaks detect --source ./api --redact --exit-code=1
+            gitleaks detect --source ./client --no-git --redact --exit-code=1
+            gitleaks detect --source ./api --no-git --redact --exit-code=1
