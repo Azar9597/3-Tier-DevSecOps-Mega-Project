@@ -28,8 +28,7 @@ jobs:
 
     - name: backend compile (syntax check)
       run: |
-        cd api
-         shell: bash
+          shell: bash
           run: |
           set -e
           cd api
