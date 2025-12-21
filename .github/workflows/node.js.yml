@@ -29,4 +29,11 @@ jobs:
     - name: backend compile (syntax check)
       run: |
         cd api
-        find . -name "*.js" -exec node --check {} +
+         shell: bash
+          run: |
+          set -e
+          cd api
+          for f in $(find . -name "*.js"); do
+          echo "Checking $f"
+          node --check "$f"
+          done
