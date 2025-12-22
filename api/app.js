@@ -5,7 +5,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-const jwtSecret = "mySuperSecretPassword123";
+const token = jwt.sign(
+  { userId: 1 },
+  "mySuperSecretPassword123",
+  { expiresIn: "1h" }
+);
+
+console.log(token);
+
 
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
