@@ -5,6 +5,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+console.log(token);
+
+
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const db = require('./models/db'); // MySQL pool connection
@@ -19,33 +22,6 @@ app.use(bodyParser.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-
-/* =====================================================
-   🔴 BUG 1: SQL Injection Vulnerability (INTENTIONAL)
-   SonarQube WILL flag this as a Vulnerability
-===================================================== */
-app.get('/api/user', async (req, res) => {
-  const userId = req.query.id;
-
-  // ❌ Vulnerable SQL (string concatenation)
-  const query = "SELECT * FROM users WHERE id = " + userId;
-
-  const [rows] = await db.promise().query(query);
-  res.json(rows);
-});
-
-/* =====================================================
-   🚨 BUG 2: eval() usage (Security Hotspot)
-   SonarQube WILL flag this as a Security Hotspot
-===================================================== */
-app.get('/api/run', (req, res) => {
-  const code = req.query.code;
-
-  // ❌ Dangerous use of eval
-  eval(code);
-
-  res.send("Code executed");
-});
 
 // Function to wait until MySQL is ready
 const waitForDb = async (retries = 30, delay = 2000) => {
