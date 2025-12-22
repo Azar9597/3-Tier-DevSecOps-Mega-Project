@@ -46,16 +46,18 @@ jobs:
              gitleaks detect --source ./api --exit-code 1
 
   trivy_scan:
-      runs-on: Agent-1
-      needs: gitleaks_scan
-      steps:
-         - name: Run Trivy vulnerability scanner
-           uses: aquasecurity/trivy-action@0.33.1
-           with:
-            scan-type: fs
-            scan-ref: .
-            format: 'table'
-            exit-code: '1'
-            ignore-unfixed: true
-            vuln-type: 'os,library'
-            severity: 'CRITICAL,HIGH'
+     runs-on: Agent-1
+     needs: gitleaks_scan
+     steps:
+       - name: trivy scan for vulnerability
+         uses: aquasecurity/trivy-action@0.33.1
+         with:
+           scan-type: fs
+           scan-ref: .
+           format: table
+           exit-code: '1'
+           ignore-unfixed: true
+           vuln-type: 'os,library'
+           severity: 'HIGH,CRITICAL'
+           
+         
