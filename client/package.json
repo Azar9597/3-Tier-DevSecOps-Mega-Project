@@ -2,6 +2,9 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+  "glob": "^10.5.0"
+},
 
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
