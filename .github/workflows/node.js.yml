@@ -163,9 +163,10 @@ jobs:
           uses: docker/build-push-action@v6
           with:
            context: ./client
-           push: true
            tags: azarx1/frontend:latest
            file: ./client/Dockerfile
+           push: false
+           load: true
 
 
         - name: scan frontend image
@@ -173,10 +174,10 @@ jobs:
           with:
             scan-type: image
             image-ref: azarx1/frontend:latest
-            exit-code: '1'
             ignore-unfixed: true
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
+            exit-code: '1'
 
         - name: push to dockerhub
           run: docker push azarx1/frontend:latest
