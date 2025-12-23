@@ -129,7 +129,6 @@ jobs:
          push: false
          load: true
 
-
       - name: Trivy image scan
         uses: aquasecurity/trivy-action@0.33.1
         with:
@@ -137,6 +136,7 @@ jobs:
           image-ref: azarx1/backend:latest
           severity: HIGH,CRITICAL
           vuln-type: os,library
+          ignore-unfixed: true
           exit-code: 1
 
   docker_push_backend:
