@@ -103,7 +103,7 @@ jobs:
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
 
   backend_image_build_scan_push:
-    runs-on: ubuntu-latest
+    runs-on: Agent-1
     needs: sonar_scan_backend
     steps:
       - name: Checkout
@@ -146,7 +146,7 @@ jobs:
 
 
   docker_build_and_push_frontend:
-      runs-on: ubuntu-latest
+      runs-on: Agent-1
       needs: sonar_scan_backend
       steps:
         - name: Checkout
