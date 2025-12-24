@@ -108,11 +108,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Login to Docker Hub
+      - name: Login to nexus registry
         uses: docker/login-action@v3
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: http://${{ vars.NEXUS_HOST }}
+          username: ${{ secrets.NEXUS_USERNAME }}
+          password: ${{ secrets.NEXUS_PASSWORD }}
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -125,7 +126,7 @@ jobs:
         with:
          context: ./api
          file: ./api/Dockerfile
-         tags: azarx1/backend:latest
+         tags: ${{ vars.NEXUS_HOST }}/backend:latest
          push: false
          load: true
 
@@ -133,14 +134,14 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: image
-          image-ref: azarx1/backend:latest
+          image-ref: ${{ vars.NEXUS_HOST }}/backend:latest
           severity: HIGH,CRITICAL
           vuln-type: os,library
           ignore-unfixed: true
           exit-code: 1
 
-      - name: Push image
-        run: docker push azarx1/backend:latest
+      - name: Push to nexus
+        run: docker push ${{ vars.NEXUS_HOST }}/backend:latest
 
 
 
@@ -150,11 +151,12 @@ jobs:
       steps:
         - name: Checkout
           uses: actions/checkout@v5
-        - name: Login to Docker Hub
+        - name: Login to nexus Docker Registry
           uses: docker/login-action@v3
           with:
-            username: ${{ vars.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
+            registry: http://${{ vars.NEXUS_HOST }}
+            username: ${{ secrets.NEXUS_USERNAME }}
+            password: ${{ secrets.NEXUS_PASSWORD }}
         - name: Set up QEMU
           uses: docker/setup-qemu-action@v3
         - name: Set up Docker Buildx
@@ -163,7 +165,7 @@ jobs:
           uses: docker/build-push-action@v6
           with:
            context: ./client
-           tags: azarx1/frontend:latest
+           tags: ${{ vars.NEXUS_HOST }}/frontend:latest
            file: ./client/Dockerfile
            push: false
            load: true
@@ -173,14 +175,14 @@ jobs:
           uses: aquasecurity/trivy-action@0.33.1
           with:
             scan-type: image
-            image-ref: azarx1/frontend:latest
+            image-ref:  ${{ vars.NEXUS_HOST }}/frontend:latest
             ignore-unfixed: true
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
             exit-code: '1'
 
-        - name: push to dockerhub
-          run: docker push azarx1/frontend:latest
+        - name: push to nexus
+          run: docker push ${{ vars.NEXUS_HOST }}/frontend:latest
 
       
            
