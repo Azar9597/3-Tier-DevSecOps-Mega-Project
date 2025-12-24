@@ -37,8 +37,8 @@ jobs:
        steps:
          - name: checkout repo
            uses: actions/checkout@v4
-           with:
-             fetch-depth: 1
+           # with:
+           #   fetch-depth: 1
          - name: gitleaks setup
            uses: gitleaks/gitleaks-action@v2
 
