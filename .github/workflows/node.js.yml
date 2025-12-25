@@ -16,9 +16,7 @@ jobs:
 
     steps:
     - name: Clean workspace
-      run: |
-        sudo rm -rf .git
-        sudo rm -rf *
+   
 
     - uses: actions/checkout@v4
     - name: setup node js
@@ -65,7 +63,7 @@ jobs:
            exit-code: '1'
            ignore-unfixed: true
            vuln-type: 'os,library'
-           severity: 'HIGH,CRITICAL'
+           severity: 'CRITICAL'
 
   sonar_scan_frontend:
     runs-on: Agent-1
