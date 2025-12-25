@@ -170,7 +170,7 @@ jobs:
 
   docker_build_and_push_frontend:
       runs-on: Agent-1
-      needs: sonar_quality_gate
+      needs: sonar_scan_frontend
       steps:
         - name: Checkout
           uses: actions/checkout@v5
