@@ -86,11 +86,10 @@ jobs:
     - name: gatecheck
       id: sonarqube-quality-gate-check
       uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
-      with:
-       pollingTimeoutSec: 600
       env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+          working-directory: client
 
   sonar_scan_backend:
     runs-on: Agent-1
@@ -111,16 +110,16 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        
 
     
       - name: gatecheck
         id: sonarqube-quality-gate-check
         uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
-        with:
-         pollingTimeoutSec: 600
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+        
 
 
 
@@ -170,7 +169,7 @@ jobs:
 
   docker_build_and_push_frontend:
       runs-on: Agent-1
-      needs: sonar_scan_frontend
+      needs: sonar_scan_backend
       steps:
         - name: Checkout
           uses: actions/checkout@v5
