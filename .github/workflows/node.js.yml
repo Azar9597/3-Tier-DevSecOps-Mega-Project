@@ -15,9 +15,6 @@ jobs:
     runs-on: Agent-1
 
     steps:
-    - name: Clean workspace
-   
-
     - uses: actions/checkout@v4
     - name: setup node js
       uses: actions/setup-node@v4
