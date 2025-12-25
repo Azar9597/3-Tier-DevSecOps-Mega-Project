@@ -89,7 +89,7 @@ jobs:
       env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
-          working-directory: client
+          
 
   sonar_scan_backend:
     runs-on: Agent-1
