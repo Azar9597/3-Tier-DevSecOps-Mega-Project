@@ -85,7 +85,7 @@ jobs:
    
     - name: gatecheck
       id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@1.1.0
+      uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
       with:
        pollingTimeoutSec: 600
       env:
@@ -115,7 +115,7 @@ jobs:
     
       - name: gatecheck
         id: sonarqube-quality-gate-check
-        uses: sonarsource/sonarqube-quality-gate-action@1.1.0
+        uses: sonarsource/sonarqube-quality-gate-action@v1.2.0
         with:
          pollingTimeoutSec: 600
         env:
