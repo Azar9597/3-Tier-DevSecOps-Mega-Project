@@ -144,8 +144,7 @@ jobs:
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      -
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build backend image
@@ -153,7 +152,7 @@ jobs:
         with:
          context: ./api
          file: ./api/Dockerfile
-         tags: ${{ vars.NEXUS_HOST }}/backend:latest
+         tags: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
          push: false
          load: true
 
@@ -161,14 +160,14 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: image
-          image-ref: ${{ vars.NEXUS_HOST }}/backend:latest
+          image-ref: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
           severity: HIGH,CRITICAL
           vuln-type: os,library
           ignore-unfixed: true
           exit-code: 1
 
       - name: Push to nexus
-        run: docker push ${{ vars.NEXUS_HOST }}/backend:latest
+        run: docker push ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
 
 
 
@@ -192,7 +191,7 @@ jobs:
           uses: docker/build-push-action@v6
           with:
            context: ./client
-           tags: ${{ vars.NEXUS_HOST }}/frontend:latest
+           tags: ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest
            file: ./client/Dockerfile
            push: false
            load: true
@@ -202,14 +201,14 @@ jobs:
           uses: aquasecurity/trivy-action@0.33.1
           with:
             scan-type: image
-            image-ref:  ${{ vars.NEXUS_HOST }}/frontend:latest
+            image-ref:  ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest
             ignore-unfixed: true
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
             exit-code: '1'
 
         - name: push to nexus
-          run: docker push ${{ vars.NEXUS_HOST }}/frontend:latest
+          run: docker push ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest
 
       
            
