@@ -7,32 +7,14 @@ on:
       - completed
 
 jobs:
-  promote-image:
+  deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: Agent-1
 
     steps:
-      # ===============================
-      # 1️⃣ LOGIN TO NEXUS
-      # ===============================
-      - name: Login to Nexus
-        run: |
-          echo "${{ secrets.NEXUS_PASSWORD }}" | docker login \
-          http://${{ vars.NEXUS_HOST }} \
-          -u "${{ secrets.NEXUS_USERNAME }}" --password-stdin
-
-      # ===============================
-      # 2️⃣ PULL IMAGES FROM NEXUS
-      # ===============================
-      - name: Pull backend image from Nexus
-        run: docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
-
-      - name: Pull frontend image from Nexus
-        run: docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest
-
-      # ===============================
-      # 3️⃣ AWS AUTH
-      # ===============================
+      # -------------------------
+      # AWS AUTH
+      # -------------------------
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -40,69 +22,51 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # ===============================
-      # 4️⃣ TERRAFORM BOOTSTRAP (ECR ONLY)
-      # ===============================
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.6.6
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Terraform Init
-        run: terraform init
-        working-directory: ECS_terraform
-
-      - name: Terraform Apply (Create ECR repos)
+      # -------------------------
+      # NEXUS LOGIN
+      # -------------------------
+      - name: Login to Nexus
         run: |
-          terraform apply -auto-approve \
-            -target=aws_ecr_repository.backend \
-            -target=aws_ecr_repository.frontend
-        working-directory: ECS_terraform
+          echo "${{ secrets.NEXUS_PASSWORD }}" | docker login \
+          http://${{ vars.NEXUS_HOST }} \
+          -u "${{ secrets.NEXUS_USERNAME }}" --password-stdin
 
-      # ===============================
-      # 5️⃣ LOGIN TO AWS ECR
-      # ===============================
-      - name: Login to AWS ECR
+      # -------------------------
+      # PULL FROM NEXUS
+      # -------------------------
+      - name: Pull images
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login \
-          --username AWS \
-          --password-stdin ${{ vars.aws_acc_id }}.dkr.ecr.us-east-1.amazonaws.com
+         # docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
+          docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest
 
-      # ===============================
-      # 6️⃣ TAG IMAGES FOR ECR
-      # ===============================
-      - name: Tag backend image
+      # -------------------------
+      # TAG & PUSH TO ECR
+      # -------------------------
+      - name: Push images to ECR
         run: |
-          docker tag \
-          ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest \
-          ${{ vars.aws_acc_id }}.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          
 
-      - name: Tag frontend image
+          # docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest \
+          # $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+
+          docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest \
+          $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+
+          # docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+
+      # -------------------------
+      # ECS DEPLOY
+      # -------------------------
+      - name: Force ECS redeploy (frontend)
         run: |
-          docker tag \
-          ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest \
-          ${{ vars.aws_acc_id }}.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          aws ecs update-service \
+            --cluster devsecops-cluster \
+            --service frontend \
+            --force-new-deployment
 
-      # ===============================
-      # 7️⃣ PUSH IMAGES TO ECR
-      # ===============================
-      - name: Push backend image to ECR
-        run: docker push ${{ vars.aws_acc_id }}.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+      
 
-      - name: Push frontend image to ECR
-        run: docker push ${{ vars.aws_acc_id }}.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
-
-      # ===============================
-      # 8️⃣ TERRAFORM APPLY (ECS + ALB)
-      # ===============================
-      - name: Terraform Validate
-        run: terraform validate
-        working-directory: ECS_terraform
-
-      - name: Terraform Plan
-        run: terraform plan
-        working-directory: ECS_terraform
-
-      - name: Terraform Apply (ECS Deploy)
-        run: terraform apply -auto-approve
-        working-directory: ECS_terraform
