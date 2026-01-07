@@ -53,10 +53,10 @@ jobs:
           # $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
 
           docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest \
-          $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
           # docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
-          docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
+          docker push 814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
       # -------------------------
       # ECS DEPLOY
