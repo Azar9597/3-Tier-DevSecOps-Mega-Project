@@ -155,7 +155,8 @@ jobs:
         with:
          context: ./api
          file: ./api/Dockerfile
-         tags: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${IMAGE_TAG}
+         tags: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${{ env.IMAGE_TAG }}
+
          push: false
          load: true
 
@@ -163,14 +164,16 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         with:
           scan-type: image
-          image-ref: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${IMAGE_TAG}
+          image-ref: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${{ env.IMAGE_TAG }}
+
           severity: CRITICAL
           vuln-type: os,library
           ignore-unfixed: true
           exit-code: 1
 
       - name: Push to nexus
-        run: docker push ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${IMAGE_TAG}
+        run: docker push ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${{ env.IMAGE_TAG }}
+
 
 
 
@@ -194,7 +197,8 @@ jobs:
           uses: docker/build-push-action@v6
           with:
            context: ./client
-           tags: ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${IMAGE_TAG}
+           tags: ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${{ env.IMAGE_TAG }}
+
            file: ./client/Dockerfile
            push: false
            load: true
@@ -204,14 +208,16 @@ jobs:
           uses: aquasecurity/trivy-action@0.33.1
           with:
             scan-type: image
-            image-ref:  ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${IMAGE_TAG}
+            image-ref:  ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${{ env.IMAGE_TAG }}
+
             ignore-unfixed: true
             vuln-type: 'os,library'
             severity: 'CRITICAL,HIGH'
             exit-code: '1'
 
         - name: push to nexus
-          run: docker push ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${IMAGE_TAG}
+          run: docker push ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${{ env.IMAGE_TAG }}
+
 
       
            
