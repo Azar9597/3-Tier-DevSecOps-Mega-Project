@@ -58,6 +58,13 @@ jobs:
           # docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
           docker push 814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
+
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y awscli
+
+
       # -------------------------
       # ECS DEPLOY
       # -------------------------
