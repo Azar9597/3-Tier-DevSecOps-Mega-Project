@@ -11,7 +11,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: Agent-1
 
-    steps:
+    steps: 
       # -------------------------
       # AWS AUTH
       # -------------------------
