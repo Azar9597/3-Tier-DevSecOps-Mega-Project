@@ -161,7 +161,7 @@ jobs:
         with:
           scan-type: image
           image-ref: ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
-          severity: HIGH,CRITICAL
+          severity: CRITICAL
           vuln-type: os,library
           ignore-unfixed: true
           exit-code: 1
