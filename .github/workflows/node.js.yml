@@ -50,7 +50,7 @@ jobs:
   trivy_scan:
      runs-on: Agent-1
      needs: gitleaks_scan
-     steps:
+     steps: 
        - name: trivy scan for vulnerability
          uses: aquasecurity/trivy-action@0.33.1
          with:
