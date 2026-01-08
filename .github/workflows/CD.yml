@@ -22,6 +22,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Setup AWS CLI
+        uses: aws-actions/setup-aws-cli@v2
+
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
@@ -59,10 +62,6 @@ jobs:
           docker push 814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
 
-      - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y awscli
 
 
       # -------------------------
