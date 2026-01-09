@@ -5,8 +5,7 @@ on:
     workflows: ["Node.js CICD"]
     types:
       - completed
-env:
-  IMAGE_TAG: ${{ github.event.workflow_run.run_number }}
+
 
 
 jobs:
@@ -54,8 +53,8 @@ jobs:
       # -------------------------
       - name: Pull images
         run: |
-         # docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${{ env.IMAGE_TAG }}
-          docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${{ env.IMAGE_TAG }}
+         # docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest
+          docker pull ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest
 
       # -------------------------
       # TAG & PUSH TO ECR
@@ -64,14 +63,13 @@ jobs:
         run: |
           
 
-          # docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/backend:${{ env.IMAGE_TAG }} \
-          # $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:${{ env.IMAGE_TAG }}
+          # docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/backend:latest \
+          # $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:latest \
+          814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
-          docker tag ${{ vars.NEXUS_HOST }}/docker-hosted/frontend:${{ env.IMAGE_TAG }} \
-          814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ env.IMAGE_TAG }}
-
-          # docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:${{ env.IMAGE_TAG }}
-          docker push 814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:${{ env.IMAGE_TAG }}
+          # docker push $ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/backend:latest
+          docker push 814864206634.dkr.ecr.us-east-1.amazonaws.com/frontend:latest
 
 
 
