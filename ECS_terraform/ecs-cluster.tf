@@ -13,7 +13,7 @@ resource "aws_ecs_task_definition" "backend" {
 
   container_definitions = jsonencode([{
     name  = "backend"
-    image = "${aws_ecr_repository.backend.repository_url}:${var.backend_image_tag}"
+    image = "${aws_ecr_repository.backend.repository_url}:latest"
     portMappings = [{
       containerPort = 5000
     }]
@@ -38,7 +38,7 @@ resource "aws_ecs_task_definition" "frontend" {
 
   container_definitions = jsonencode([{
     name  = "frontend"
-    image = "${aws_ecr_repository.frontend.repository_url}:${var.frontend_image_tag}"
+    image = "${aws_ecr_repository.frontend.repository_url}:latest"
     portMappings = [{
       containerPort = 80
     }]
